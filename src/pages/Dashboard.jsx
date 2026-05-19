@@ -8,6 +8,7 @@ import { LineChart, Line, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianG
 import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import ConfirmModal from '../components/ConfirmModal';
+import OnboardingModal from '../components/OnboardingModal';
 
 const toLocalISOString = (d = new Date()) => {
   const tzOffset = d.getTimezoneOffset() * 60000;
@@ -61,6 +62,15 @@ const Dashboard = () => {
   const [confirmDepense, setConfirmDepense] = useState({ open: false, id: null, desc: '', montant: 0 });
   // Weekly report state
   const [weeklyReport, setWeeklyReport] = useState(null);
+
+  const [showOnboarding, setShowOnboarding] = useState(() => {
+    return !localStorage.getItem('mbiz_onboarding_completed');
+  });
+
+  const handleCloseOnboarding = () => {
+    localStorage.setItem('mbiz_onboarding_completed', 'true');
+    setShowOnboarding(false);
+  };
 
   // Fetch real data from Dexie
   const today = toLocalISOString(new Date()).split('T')[0];
@@ -936,7 +946,11 @@ const Dashboard = () => {
         cancelLabel="Non, garder"
         danger={true}
         onConfirm={doAnnulerDepense}
-        onCancel={() => setConfirmDepense({ open: false, id: null, desc: '', montant: 0 })}
+      />
+
+      <OnboardingModal 
+        isOpen={showOnboarding} 
+        onClose={handleCloseOnboarding} 
       />
     </div>
   );

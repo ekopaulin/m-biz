@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Download, Upload, LogOut, Lock, Share2, MessageSquare, Globe, FileText, Building2 } from 'lucide-react';
+import { Download, Upload, LogOut, Lock, Share2, MessageSquare, Globe, FileText, Building2, HelpCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { db } from '../db';
 import { useAppContext } from '../context/AppContext';
@@ -261,59 +261,72 @@ const Parametres = () => {
             Recommandez M-Biz à vos amis commerçants !
           </p>
           <div className="flex flex-col gap-2">
-            {/* WhatsApp */}
-            <button
-              onClick={() => {
-                const msg = `Eh frère/sœur ! 👋 Tu gères une boutique ?
-
-J'utilise *M-Biz Progrès* pour suivre mes ventes, dépenses et dettes — même sans internet. C'est gratuit et ça prend 30 secondes par vente.
-
-Essaie ici 👉 ${window.location.origin}
-
-Tu me diras merci 😄`;
-                window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
-              }}
-              className="w-full flex items-center justify-center gap-2 py-2 px-4 rounded-xl bg-[#25D366] text-white font-bold text-xs hover:bg-[#1ebe5d] transition-all cursor-pointer shadow-sm"
-            >
-              {/* WhatsApp SVG icon */}
-              <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-              </svg>
-              Partager sur WhatsApp
-            </button>
-
-            {/* Facebook */}
-            <button
-              onClick={() => {
-                const url = encodeURIComponent(window.location.origin);
-                window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${encodeURIComponent('Je gère ma boutique avec M-Biz Progrès — une appli gratuite qui marche sans internet !')}`, '_blank');
-              }}
-              className="w-full flex items-center justify-center gap-2 py-2 px-4 rounded-xl bg-[#1877F2] text-white font-bold text-xs hover:bg-[#1465d8] transition-all cursor-pointer shadow-sm"
-            >
-              {/* Facebook SVG icon */}
-              <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-              </svg>
-              Partager sur Facebook
-            </button>
-
-            {/* Web Share API (mobile natif) */}
-            {'share' in navigator && (
-              <button
-                onClick={() => {
-                  navigator.share({
-                    title: 'M-Biz Progrès — Gestion de boutique',
-                    text: 'Je gère ma boutique avec M-Biz Progrès, une appli gratuite qui marche même sans internet !',
-                    url: window.location.origin
-                  }).catch(() => {});
-                }}
-                className="w-full flex items-center justify-center gap-2 py-2 px-4 rounded-xl bg-white border border-black/10 text-text-main font-bold text-xs hover:bg-black/5 transition-all cursor-pointer shadow-sm"
-              >
-                <Share2 size={14} />
-                Partager autrement...
-              </button>
-            )}
+             {/* WhatsApp */}
+             <button
+               onClick={() => {
+                 const msg = `Bonjour, je vous invite à découvrir M-Biz, une application gratuite conçue pour simplifier la gestion quotidienne de votre commerce (ventes, dépenses et dettes), utilisable même sans connexion internet. Vous pouvez y accéder à l'adresse suivante : https://m-biz.vercel.app/`;
+                 window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+               }}
+               className="w-full flex items-center justify-center gap-2 py-2 px-4 rounded-xl bg-[#25D366] text-white font-bold text-xs hover:bg-[#1ebe5d] transition-all cursor-pointer shadow-sm"
+             >
+               {/* WhatsApp SVG icon */}
+               <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24">
+                 <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+               </svg>
+               Partager sur WhatsApp
+             </button>
+ 
+             {/* Facebook */}
+             <button
+               onClick={() => {
+                 const url = encodeURIComponent('https://m-biz.vercel.app/');
+                 window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${encodeURIComponent('Bonjour, je vous invite à découvrir M-Biz, une application gratuite conçue pour simplifier la gestion quotidienne de votre commerce (ventes, dépenses et dettes), utilisable même sans connexion internet.')}`, '_blank');
+               }}
+               className="w-full flex items-center justify-center gap-2 py-2 px-4 rounded-xl bg-[#1877F2] text-white font-bold text-xs hover:bg-[#1465d8] transition-all cursor-pointer shadow-sm"
+             >
+               {/* Facebook SVG icon */}
+               <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24">
+                 <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+               </svg>
+               Partager sur Facebook
+             </button>
+ 
+             {/* Web Share API (mobile natif) */}
+             {'share' in navigator && (
+               <button
+                 onClick={() => {
+                   navigator.share({
+                     title: 'M-Biz — Gestion de boutique',
+                     text: 'Bonjour, je vous invite à découvrir M-Biz, une application gratuite conçue pour simplifier la gestion quotidienne de votre commerce (ventes, dépenses et dettes), utilisable même sans connexion internet.',
+                     url: 'https://m-biz.vercel.app/'
+                   }).catch(() => {});
+                 }}
+                 className="w-full flex items-center justify-center gap-2 py-2 px-4 rounded-xl bg-white border border-black/10 text-text-main font-bold text-xs hover:bg-black/5 transition-all cursor-pointer shadow-sm"
+               >
+                 <Share2 size={14} />
+                 Partager autrement...
+               </button>
+             )}
           </div>
+        </div>
+
+        <div className="glass-card p-5 border border-primary/20 bg-gradient-to-br from-primary/5 to-transparent">
+          <div className="flex items-center gap-2 mb-1">
+            <HelpCircle size={18} className="text-primary-dark" />
+            <h3 className="font-semibold text-lg text-text-main">Aide & Tutoriel</h3>
+          </div>
+          <p className="text-sm text-text-muted mb-4">
+            Besoin d'aide ou envie de revoir le guide de démarrage de l'application ?
+          </p>
+          <button
+            onClick={() => {
+              localStorage.removeItem('mbiz_onboarding_completed');
+              toast.success('Le tutoriel de bienvenue va se relancer sur votre tableau de bord !');
+            }}
+            className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-primary text-black font-bold text-xs hover:opacity-90 transition-all cursor-pointer shadow-sm"
+          >
+            Revoir le guide de démarrage
+          </button>
         </div>
 
         <div className="glass-card p-5">
