@@ -1,0 +1,306 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #059669;
+  --color-primary-dark: #047857;
+  --color-brandOrange: #E8650A;
+  --color-bg-main: #EBEDF0;
+  --color-bg-light: #F0FAFE;
+  --color-bg-card: #FFFFFF;
+  --color-text-main: #000000;
+  --color-text-muted: #767C8C;
+  --font-sans: 'Outfit', sans-serif;
+  --shadow-glass: 0 8px 32px 0 rgba(122, 248, 208, 0.2);
+}
+
+/* Surcharge des variables pour le Mode Sombre */
+.dark {
+  --color-bg-main: #0B0F19; /* Espace sombre profond */
+  --color-bg-light: #0F172A; /* Fond Slate-900 pour la vue mobile */
+  --color-bg-card: #1E293B; /* Slate-800 pour les cartes */
+  --color-text-main: #F8FAFC; /* Slate-50 blanc doux */
+  --color-text-muted: #94A3B8; /* Slate-400 gris doux */
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Transition fluide de changement de thème */
+body, .app-container, .glass-card, .form-control, button, input, select {
+  transition: background-color 0.25s ease, border-color 0.25s ease, color 0.15s ease-out;
+}
+
+body {
+  background-color: var(--color-bg-main);
+  color: var(--color-text-main);
+  font-family: var(--font-sans);
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+}
+
+@layer components {
+  .app-container {
+    width: 100%;
+    background-color: var(--color-bg-light);
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+    padding-bottom: 96px; /* 24 * 4px */
+    display: flex;
+    flex-direction: column;
+  }
+  
+  @media (min-width: 480px) {
+    .app-container {
+      max-width: 480px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      border-left: 1px solid rgba(0,0,0,0.05);
+      border-right: 1px solid rgba(0,0,0,0.05);
+    }
+  }
+  
+  .glass-card {
+    background-color: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 16px; /* 2xl */
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    padding: 20px;
+  }
+
+  /* Ajustement de la carte de verre en mode sombre */
+  .dark .glass-card {
+    background-color: rgba(30, 41, 59, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border-radius: 9999px;
+    font-weight: 600;
+    font-size: 16px;
+    transition: all 0.2s;
+  }
+  
+  .btn:active {
+    transform: scale(0.95);
+  }
+  
+  .btn-primary {
+    background-color: var(--color-primary);
+    color: #fff;
+    box-shadow: var(--shadow-glass);
+  }
+  
+  .btn-primary:active {
+    background-color: var(--color-primary-dark);
+  }
+  
+  .form-control {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 12px;
+    border: 1px solid rgba(0,0,0,0.1);
+    background-color: #fff;
+    font-size: 15px;
+    transition: all 0.2s;
+  }
+
+  /* Formulaire en mode sombre */
+  .dark .form-control {
+    background-color: #1E293B;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #F8FAFC;
+  }
+  .dark .form-control::placeholder {
+    color: #64748B;
+  }
+  
+  .form-control:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 4px rgba(122, 248, 208, 0.3);
+  }
+
+  .form-group {
+    margin-bottom: 16px;
+  }
+
+  .form-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: var(--color-text-main);
+  }
+  
+  .page-container {
+    padding: 20px;
+    animation: fadeIn 0.3s ease-out;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes scaleUp {
+    from { transform: scale(0.9) translateY(10px); opacity: 0; }
+    to { transform: scale(1) translateY(0); opacity: 1; }
+  }
+}
+
+/* Surcharges globales pour les éléments en mode sombre */
+.dark .bg-white {
+  background-color: var(--color-bg-card) !important;
+  color: var(--color-text-main) !important;
+}
+
+.dark .bg-bg-light {
+  background-color: var(--color-bg-light) !important;
+}
+
+.dark .text-text-main {
+  color: var(--color-text-main) !important;
+}
+
+.dark .text-text-muted {
+  color: var(--color-text-muted) !important;
+}
+
+.dark .border-black\/5, 
+.dark .border-black\/10 {
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Fixer la barre de navigation WhatsApp en mode sombre */
+.dark .fixed.bottom-0 {
+  background-color: rgba(15, 23, 42, 0.96) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Adapter le sélecteur d'onglets de période */
+.dark select {
+  background-color: #1E293B !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  color: #F8FAFC !important;
+}
+
+/* ===================================================
+   MODE SOMBRE — CORRECTIFS LISIBILITÉ COMPLETS
+   =================================================== */
+
+/* Sélecteur d'onglets (Caisse, Dettes, etc.) */
+.dark .bg-white\/50 {
+  background-color: rgba(30, 41, 59, 0.8) !important;
+}
+
+/* Boutons inactifs dans les onglets et les pill buttons */
+.dark .hover\:bg-white\/80:not(.text-primary):not([class*="btn-primary"]) {
+  color: #94A3B8 !important;
+}
+.dark .hover\:bg-white\/80:hover {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Tous les fonds bg-white qui ne sont pas actifs */
+.dark .bg-white:not(.text-white) {
+  background-color: #1E293B !important;
+  color: #F8FAFC !important;
+}
+
+/* Fond des modals et cartes overlay */
+.dark .bg-bg-light {
+  background-color: #0F172A !important;
+}
+
+/* Boutons méthode paiement inactifs */
+.dark button.bg-white.border-black\/10 {
+  background-color: #1E293B !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  color: #94A3B8 !important;
+}
+
+/* Fond des accordéons et des sections déroulantes */
+.dark .bg-white\/60,
+.dark .bg-white\/80 {
+  background-color: rgba(30, 41, 59, 0.8) !important;
+}
+
+/* Fond des récap et info boxes légères */
+.dark .bg-black\/5 {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+}
+.dark .bg-black\/10 {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Lignes de séparation */
+.dark .border-black\/5 {
+  border-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Fond des items de liste (historique, versements...) */
+.dark .bg-bg-light {
+  background-color: rgba(15, 23, 42, 0.9) !important;
+}
+
+/* Overlay des modals de confirmation */
+.dark .bg-black\/50,
+.dark .bg-black\/60 {
+  background-color: rgba(0, 0, 0, 0.75) !important;
+}
+
+/* Inputs dans les modaux en mode sombre */
+.dark input[type="text"],
+.dark input[type="number"],
+.dark input[type="password"],
+.dark input[type="date"],
+.dark textarea {
+  background-color: #1E293B !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  color: #F8FAFC !important;
+}
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: #64748B !important;
+}
+
+/* Labels de formulaire */
+.dark label {
+  color: #CBD5E1 !important;
+}
+
+/* Bouton toggle accordéon */
+.dark button.flex.justify-between {
+  color: #F8FAFC !important;
+}
+
+/* Checkbox */
+.dark input[type="checkbox"] {
+  accent-color: var(--color-primary);
+}
+
+/* Cartes radio dans le modal PDF */
+.dark label.flex.items-center.gap-3 {
+  background-color: #1E293B !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  color: #F8FAFC !important;
+}
+
