@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <radialGradient id="grad" cx="45%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#2d7a5c"/>
+      <stop offset="55%" stop-color="#3aad82"/>
+      <stop offset="100%" stop-color="#7af8d0"/>
+    </radialGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="18" flood-color="#1a5c40" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+
+  <!-- Cercle principal -->
+  <circle cx="256" cy="256" r="240" fill="url(#grad)" filter="url(#shadow)"/>
+
+  <!-- Lettre M -->
+  <text
+    x="88"
+    y="330"
+    font-family="Arial Black, Arial, sans-serif"
+    font-weight="900"
+    font-size="265"
+    fill="white"
+    fill-opacity="0.97"
+    letter-spacing="-8"
+  >M</text>
+
+  <!-- Lettre B (décalée pour chevaucher légèrement le M) -->
+  <text
+    x="248"
+    y="330"
+    font-family="Arial Black, Arial, sans-serif"
+    font-weight="900"
+    font-size="265"
+    fill="white"
+    fill-opacity="0.97"
+    letter-spacing="-8"
+  >B</text>
+
+  <!-- Reflet lumineux subtil en haut à gauche -->
+  <ellipse cx="190" cy="160" rx="90" ry="55" fill="white" fill-opacity="0.08" transform="rotate(-25 190 160)"/>
+</svg>

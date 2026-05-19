@@ -121,7 +121,7 @@ const Auth = () => {
         
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-white shadow-glass mb-4 overflow-hidden border-4 border-white">
-            <img src="/logo.jpg" alt="M-Biz Logo" className="w-full h-full object-cover" />
+            <img src="/logo_mbiz.jpg" alt="M-Biz Logo" className="w-full h-full object-cover" />
           </div>
           <h1 className="text-3xl font-bold text-text-main tracking-tight">M-Biz</h1>
           <p className="text-text-muted mt-2">Gestion simplifiée pour votre commerce</p>
