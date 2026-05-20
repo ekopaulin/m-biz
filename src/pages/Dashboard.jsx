@@ -464,32 +464,34 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Grille 2x2 compacte épurée */}
-      <div className="grid grid-cols-2 gap-4 mb-6">
-        {/* Carte 1: Ventes */}
-        <div className="glass-card !p-4 flex flex-col justify-between h-auto border border-[rgba(255,255,255,0.4)] dark:border-[rgba(255,255,255,0.05)] shadow-sm">
-          <div className="flex justify-between items-start mb-3">
-            <div className="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-900 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shadow-inner">
-              <ShoppingCart size={20} strokeWidth={2.5} />
-            </div>
-            <div className="text-right">
-              <h3 className="text-[11px] font-bold text-text-muted mb-0.5 uppercase tracking-wide">Total Ventes</h3>
-              <p className="text-xl font-black text-text-main truncate">
-                {fmt(caDuJour)} <span className="text-xs font-bold text-text-muted">{devise}</span>
-              </p>
-            </div>
+      {/* Total Ventes (Full Width) */}
+      <div className="glass-card bg-gradient-to-r from-slate-800 to-slate-900 dark:from-slate-800 dark:to-slate-950 border-none shadow-xl text-white rounded-3xl p-5 mb-6 relative overflow-hidden">
+        <div className="absolute right-0 top-0 w-32 h-32 rounded-full bg-blue-500/10 blur-2xl"></div>
+        
+        <div className="flex justify-between items-start mb-4 relative z-10">
+          <div>
+            <h3 className="text-xs font-semibold text-slate-300 mb-1 uppercase tracking-wider">Total Ventes</h3>
+            <p className="text-3xl font-black text-white">{fmt(caDuJour)} <span className="text-base font-bold text-slate-400">{devise}</span></p>
           </div>
-          <div className="flex gap-2 mt-1 pt-3 border-t border-black/5 dark:border-white/5">
-            <div className="flex-1 bg-emerald-50 dark:bg-emerald-500/10 rounded-lg p-2 flex flex-col justify-center border border-emerald-500/10">
-              <span className="text-[9px] uppercase tracking-wider font-bold text-emerald-600 dark:text-emerald-400 mb-0.5">Directes</span>
-              <span className="font-bold text-sm text-text-main">{fmt(caDirect)} <span className="text-[9px] text-text-muted">{devise}</span></span>
-            </div>
-            <div className="flex-1 bg-blue-50 dark:bg-blue-500/10 rounded-lg p-2 flex flex-col justify-center border border-blue-500/10">
-              <span className="text-[9px] uppercase tracking-wider font-bold text-blue-600 dark:text-blue-400 mb-0.5">Bilan soir</span>
-              <span className="font-bold text-sm text-text-main">{fmt(caBilan)} <span className="text-[9px] text-text-muted">{devise}</span></span>
-            </div>
+          <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center backdrop-blur-sm">
+            <ShoppingCart size={20} className="text-blue-400" strokeWidth={2.5} />
           </div>
         </div>
+
+        <div className="flex gap-3 relative z-10">
+          <div className="flex-1 bg-white/5 rounded-2xl p-3 border border-white/5 backdrop-blur-sm">
+            <p className="text-[10px] uppercase tracking-wider font-bold text-emerald-400 mb-1">Directes</p>
+            <p className="font-bold text-lg text-white">{fmt(caDirect)} <span className="text-[10px] text-slate-400">{devise}</span></p>
+          </div>
+          <div className="flex-1 bg-white/5 rounded-2xl p-3 border border-white/5 backdrop-blur-sm">
+            <p className="text-[10px] uppercase tracking-wider font-bold text-blue-400 mb-1">Bilan soir</p>
+            <p className="font-bold text-lg text-white">{fmt(caBilan)} <span className="text-[10px] text-slate-400">{devise}</span></p>
+          </div>
+        </div>
+      </div>
+
+      {/* Grille compacte épurée */}
+      <div className="grid grid-cols-2 gap-4 mb-6">
 
         {/* Carte 2: Dépenses */}
         <div className="glass-card !p-4 flex flex-col justify-between h-28 border border-[rgba(255,255,255,0.4)] dark:border-[rgba(255,255,255,0.05)] shadow-sm relative group">
