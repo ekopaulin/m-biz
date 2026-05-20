@@ -9,6 +9,7 @@ import Dettes from './pages/Dettes';
 import Parametres from './pages/Parametres';
 import Cotisations from './pages/Cotisations';
 import TutorialOverlay from './components/TutorialOverlay';
+import InstallPrompt from './components/InstallPrompt';
 import { AppProvider } from './context/AppContext';
 import './index.css';
 
@@ -18,6 +19,7 @@ function App() {
       <Router>
         <div className="app-container mx-auto">
           <Toaster position="top-center" toastOptions={{ duration: 3000, style: { background: '#333', color: '#fff', borderRadius: '10px' } }} />
+          <InstallPrompt />
           <TutorialOverlay />
           <Routes>
             <Route path="/" element={<Dashboard />} />
