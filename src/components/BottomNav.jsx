@@ -39,6 +39,7 @@ const BottomNav = () => {
           <NavLink
             key={item.path}
             to={item.path}
+            id={item.path === '/' ? 'tour-tableau' : `tour-${item.path.substring(1)}`}
             className={({ isActive }) =>
               `flex flex-col items-center justify-center text-[10px] font-semibold transition-all duration-300 py-1 flex-1 ${isActive ? 'text-primary' : 'text-text-muted'}`
             }

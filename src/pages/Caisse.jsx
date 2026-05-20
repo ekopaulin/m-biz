@@ -155,7 +155,6 @@ const Caisse = () => {
         total: totalVente
       }]
     });
-    setShowSuccessModal(true);
   };
 
   const handleVenteGlobale = async () => {
@@ -240,7 +239,6 @@ const Caisse = () => {
       totalVente: totalVenteGlobal,
       items: receiptItems
     });
-    setShowSuccessModal(true);
   };
 
   const getProductName = (vente) => {
@@ -532,116 +530,6 @@ const Caisse = () => {
         </>
       )}
 
-      {/* 🧾 Modal de Succès & Partage de Reçu WhatsApp */}
-      {showSuccessModal && lastSaleDetails && (
-        <div className="fixed inset-0 bg-black/60 z-[100] flex items-center justify-center p-4 backdrop-blur-sm animate-[fadeIn_0.2s_ease-out]">
-          <div className="bg-bg-light rounded-2xl w-full max-w-sm p-6 relative shadow-2xl text-text-main text-center border border-black/5 animate-[scaleUp_0.3s_cubic-bezier(0.34,1.56,0.64,1)]">
-            
-            {/* Icône de coche animée en haut */}
-            <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4 border border-primary/20 animate-bounce">
-              <CheckCircle size={36} className="text-primary" />
-            </div>
-
-            <h2 className="text-xl font-bold text-text-main mb-1 notranslate" translate="no">
-              {lastSaleDetails.modePaiement === 'Crédit' ? 'Dette Enregistrée ! 📝' : 'Vente Validée ! 🎉'}
-            </h2>
-            <p className="text-xs text-text-muted mb-4">Votre transaction a bien été enregistrée</p>
-
-            {/* Ticket de Caisse Virtuel */}
-            <div className="bg-white/80 dark:bg-bg-card border border-black/5 dark:border-white/5 rounded-xl p-4 text-left relative overflow-hidden mb-6 shadow-sm">
-              {/* Effet papier ticket (dentelé horizontal) */}
-              <div className="absolute top-0 left-0 right-0 h-1 bg-[linear-gradient(45deg,transparent_33.333%,#ebedf0_33.333%,#ebedf0_66.667%,transparent_66.667%)] bg-[length:12px_6px] bg-repeat-x dark:bg-[linear-gradient(45deg,transparent_33.333%,#0b0f19_33.333%,#0b0f19_66.667%,transparent_66.667%)]"></div>
-
-              {/* Titre ticket */}
-              <div className="text-center font-bold text-sm tracking-wider uppercase mb-3 text-text-main border-b border-dashed border-black/10 dark:border-white/10 pb-2 notranslate" translate="no">
-                {commerce?.nom || 'M-Biz Progrès'}
-              </div>
-
-              <div className="text-[11px] text-text-muted mb-3 flex flex-col gap-0.5">
-                <div className="flex justify-between">
-                  <span>Date:</span>
-                  <span className="font-semibold text-text-main">
-                    {new Date(lastSaleDetails.date).toLocaleDateString('fr-FR', {
-                      day: '2-digit',
-                      month: '2-digit',
-                      year: 'numeric',
-                      hour: '2-digit',
-                      minute: '2-digit'
-                    })}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Paiement:</span>
-                  <span className="font-semibold text-text-main">{lastSaleDetails.modePaiement}</span>
-                </div>
-                {lastSaleDetails.nomClient && (
-                  <div className="flex justify-between">
-                    <span>Client:</span>
-                    <span className="font-semibold text-text-main notranslate" translate="no">{lastSaleDetails.nomClient}</span>
-                  </div>
-                )}
-              </div>
-
-              {/* Liste articles */}
-              <div className="border-t border-dashed border-black/10 dark:border-white/10 pt-2 mb-3">
-                <span className="text-[10px] uppercase font-bold text-text-muted tracking-wider block mb-2">Articles</span>
-                <div className="flex flex-col gap-2 max-h-36 overflow-y-auto pr-1">
-                  {lastSaleDetails.items.map((item, idx) => (
-                    <div key={idx} className="flex justify-between text-xs items-start">
-                      <div className="flex-1 pr-2">
-                        <span className="font-semibold text-text-main notranslate" translate="no">{item.nom}</span>
-                        <span className="text-[10px] text-text-muted block">{item.quantite} x {fmt(item.prixUnitaire)} {devise}</span>
-                      </div>
-                      <span className="font-bold text-text-main">{fmt(item.total)} {devise}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Total */}
-              <div className="border-t border-dashed border-black/15 dark:border-white/15 pt-3 flex justify-between items-center">
-                <span className="text-xs font-bold text-text-main">TOTAL</span>
-                <span className="text-base font-extrabold text-primary">{fmt(lastSaleDetails.totalVente)} {devise}</span>
-              </div>
-            </div>
-
-            {/* Boutons d'Action */}
-            <div className="flex flex-col gap-2">
-              <button
-                onClick={() => genererRecuPdf(commerce || { nom: 'M-Biz Pro' }, lastSaleDetails)}
-                className="btn w-full bg-primary hover:bg-primary-dark text-white font-bold !py-3.5 rounded-xl flex items-center justify-center gap-2 cursor-pointer shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all notranslate"
-                translate="no"
-              >
-                <FileText size={18} />
-                Télécharger le Reçu PDF
-              </button>
-
-              <button
-                onClick={handleShareReceipt}
-                className="btn w-full bg-[#25D366] hover:bg-[#20ba59] text-white font-bold !py-3.5 rounded-xl flex items-center justify-center gap-2 cursor-pointer shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all notranslate"
-                translate="no"
-              >
-                {/* Icône WhatsApp SVG officielle */}
-                <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M12.031 2C6.49 2 2 6.48 2 12.01c0 1.84.5 3.56 1.36 5.05L2 22l5.12-1.34c1.44.78 3.08 1.22 4.81 1.22 5.54 0 10.03-4.48 10.03-10.01C21.96 6.48 17.57 2 12.03 2zm6.23 14.18c-.27.75-1.55 1.39-2.14 1.48-.52.08-1.19.14-3.41-.77-2.83-1.17-4.66-4.04-4.8-4.23-.14-.19-1.12-1.49-1.12-2.84 0-1.35.7-2.01.95-2.28.25-.27.55-.34.73-.34.18 0 .36 0 .52.01.17.01.4.01.62.53.22.53.77 1.88.84 2.01.07.13.11.29.02.46-.09.18-.18.29-.36.49-.18.21-.38.48-.54.65-.17.18-.35.38-.15.73.2.35.88 1.45 1.88 2.34 1.29 1.15 2.38 1.5 2.72 1.67.34.17.54.14.74-.08.2-.23.86-1 .99-1.35.13-.35.26-.29.44-.23.18.07 1.15.54 1.35.64.2.1.33.15.38.23.05.09.05.5-.22 1.25z"/>
-                </svg>
-                Partager sur WhatsApp
-              </button>
-              
-              <button
-                onClick={() => {
-                  setShowSuccessModal(false);
-                  setLastSaleDetails(null);
-                }}
-                className="btn w-full bg-black/5 hover:bg-black/10 dark:bg-white/5 dark:hover:bg-white/10 text-text-muted font-bold !py-3 rounded-xl cursor-pointer transition-all"
-              >
-                Nouvelle vente
-              </button>
-            </div>
-
-          </div>
-        </div>
-      )}
     </div>
   );
 };

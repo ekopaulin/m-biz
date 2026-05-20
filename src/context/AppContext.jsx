@@ -12,6 +12,9 @@ export const AppProvider = ({ children }) => {
   const [theme, setTheme] = useState(() => {
     return localStorage.getItem('theme') || 'light';
   });
+  const [hasSeenTutorial, setHasSeenTutorial] = useState(() => {
+    return localStorage.getItem('hasSeenTutorial') === 'true';
+  });
 
   // Initialize and check if a commerce exists
   useEffect(() => {
@@ -57,6 +60,11 @@ export const AppProvider = ({ children }) => {
     setIsAuthenticated(false);
   };
 
+  const completeTutorial = () => {
+    localStorage.setItem('hasSeenTutorial', 'true');
+    setHasSeenTutorial(true);
+  };
+
   const value = {
     activeCommerceId,
     isAuthenticated,
@@ -67,7 +75,9 @@ export const AppProvider = ({ children }) => {
     theme,
     toggleTheme,
     devise,
-    setDevise
+    setDevise,
+    hasSeenTutorial,
+    completeTutorial
   };
 
   if (hasCommerce === null) {
