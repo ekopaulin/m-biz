@@ -11,7 +11,7 @@ const toLocalISOString = (d = new Date()) => {
   const tzOffset = d.getTimezoneOffset() * 60000;
   return new Date(d.getTime() - tzOffset).toISOString().slice(0, -1);
 };
-const fmt = (n) => (n || 0).toLocaleString('fr-FR');
+const fmt = (n) => Number(n || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
 
 const Caisse = () => {
   const { activeCommerceId, devise } = useAppContext();

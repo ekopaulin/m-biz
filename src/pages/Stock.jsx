@@ -7,7 +7,7 @@ import toast from 'react-hot-toast';
 import ConfirmModal from '../components/ConfirmModal';
 import Loader from '../components/Loader';
 
-const fmt = (n) => (n || 0).toLocaleString('fr-FR');
+const fmt = (n) => Number(n || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
 const emptyForm = { nom: '', categorie: '', prixAchat: '', prixVente: '', stock: '', stockMin: '5', isFood: false };
 
 const Stock = () => {

@@ -1,7 +1,7 @@
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
-const formatAmount = (n) => (n || 0).toLocaleString('fr-FR').replace(/[\s\u202F\u00A0]/g, ' ');
+const formatAmount = (n) => Number(n || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
 
 /**
  * Génère un rapport PDF complet incluant les ventes ET les dépenses
@@ -290,7 +290,7 @@ export const genererRapportSolvabilite = (commerce, ventes, depenses, dettes, pr
   const greenColor  = [22, 163, 74];
   const redColor    = [220, 38, 38];
 
-  const fmt = (n) => (n || 0).toLocaleString('fr-FR').replace(/[\s\u202F\u00A0]/g, ' ');
+  const fmt = (n) => Number(n || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
 
   // ── 1. EN-TÊTE ────────────────────────────────────────────────────────────
   doc.setFillColor(...blueColor);

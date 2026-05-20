@@ -11,7 +11,7 @@ const toLocalISOString = (d = new Date()) => {
   return new Date(d.getTime() - tzOffset).toISOString().slice(0, -1);
 };
 const toLocalDateStr = () => toLocalISOString().split('T')[0];
-const fmt = (n) => (n || 0).toLocaleString('fr-FR');
+const fmt = (n) => Number(n || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
 
 const Dettes = () => {
   const { activeCommerceId, devise } = useAppContext();

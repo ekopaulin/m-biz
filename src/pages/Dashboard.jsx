@@ -15,7 +15,7 @@ const toLocalISOString = (d = new Date()) => {
   const tzOffset = d.getTimezoneOffset() * 60000;
   return new Date(d.getTime() - tzOffset).toISOString().slice(0, -1);
 };
-const fmt = (n) => (n || 0).toLocaleString('fr-FR');
+const fmt = (n) => Number(n || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
 
 const CustomTooltip = ({ active, payload, label, devise }) => {
   if (active && payload && payload.length) {
@@ -29,16 +29,16 @@ const CustomTooltip = ({ active, payload, label, devise }) => {
         <p className="text-slate-500 dark:text-slate-400 mb-2">{label}</p>
         <p className="flex justify-between gap-4 mb-1">
           <span>Entrées (Ventes) :</span>
-          <span className="font-bold text-emerald-600 dark:text-emerald-400">{ca.toLocaleString('fr-FR')} {devise}</span>
+          <span className="font-bold text-emerald-600 dark:text-emerald-400">{fmt(ca)} {devise}</span>
         </p>
         <p className="flex justify-between gap-4 mb-2">
           <span>Sorties (Dépenses) :</span>
-          <span className="font-bold text-red-500 dark:text-red-400">{depenses.toLocaleString('fr-FR')} {devise}</span>
+          <span className="font-bold text-red-500 dark:text-red-400">{fmt(depenses)} {devise}</span>
         </p>
         <div className="border-t border-slate-200 dark:border-slate-700 pt-2 flex justify-between gap-4">
           <span>Bénéfice Réel :</span>
           <span className={`font-bold ${benefice >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-500 dark:text-red-400'}`}>
-            {benefice.toLocaleString('fr-FR')} {devise}
+            {fmt(benefice)} {devise}
           </span>
         </div>
       </div>
@@ -468,25 +468,25 @@ const Dashboard = () => {
       <div className="grid grid-cols-2 gap-4 mb-6">
         {/* Carte 1: Ventes */}
         <div className="glass-card !p-4 flex flex-col justify-between h-auto border border-[rgba(255,255,255,0.4)] dark:border-[rgba(255,255,255,0.05)] shadow-sm">
-          <div className="flex justify-between items-start mb-2">
-            <div className="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-900 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
-              <ShoppingCart size={20} strokeWidth={2} />
+          <div className="flex justify-between items-start mb-3">
+            <div className="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-900 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shadow-inner">
+              <ShoppingCart size={20} strokeWidth={2.5} />
             </div>
             <div className="text-right">
-              <h3 className="text-[11px] font-bold text-text-muted mb-0.5">Total Ventes</h3>
-              <p className="text-lg font-black text-text-main truncate">
+              <h3 className="text-[11px] font-bold text-text-muted mb-0.5 uppercase tracking-wide">Total Ventes</h3>
+              <p className="text-xl font-black text-text-main truncate">
                 {fmt(caDuJour)} <span className="text-xs font-bold text-text-muted">{devise}</span>
               </p>
             </div>
           </div>
-          <div className="flex flex-col gap-1 mt-1 border-t border-black/5 dark:border-white/5 pt-2">
-            <div className="flex justify-between items-center text-[10px]">
-              <span className="text-emerald-600 dark:text-emerald-400 font-bold">Directes</span>
-              <span className="font-semibold text-text-main">{fmt(caDirect)}</span>
+          <div className="flex gap-2 mt-1 pt-3 border-t border-black/5 dark:border-white/5">
+            <div className="flex-1 bg-emerald-50 dark:bg-emerald-500/10 rounded-lg p-2 flex flex-col justify-center border border-emerald-500/10">
+              <span className="text-[9px] uppercase tracking-wider font-bold text-emerald-600 dark:text-emerald-400 mb-0.5">Directes</span>
+              <span className="font-bold text-sm text-text-main">{fmt(caDirect)} <span className="text-[9px] text-text-muted">{devise}</span></span>
             </div>
-            <div className="flex justify-between items-center text-[10px]">
-              <span className="text-blue-600 dark:text-blue-400 font-bold">Bilan soir</span>
-              <span className="font-semibold text-text-main">{fmt(caBilan)}</span>
+            <div className="flex-1 bg-blue-50 dark:bg-blue-500/10 rounded-lg p-2 flex flex-col justify-center border border-blue-500/10">
+              <span className="text-[9px] uppercase tracking-wider font-bold text-blue-600 dark:text-blue-400 mb-0.5">Bilan soir</span>
+              <span className="font-bold text-sm text-text-main">{fmt(caBilan)} <span className="text-[9px] text-text-muted">{devise}</span></span>
             </div>
           </div>
         </div>
@@ -573,7 +573,7 @@ const Dashboard = () => {
               <LineChart data={chartData} margin={{ top: 10, right: 10, left: -5, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.05)" vertical={false} />
                 <XAxis dataKey="name" stroke="#767C8C" fontSize={10} tickLine={false} axisLine={false} />
-                <YAxis stroke="#767C8C" fontSize={10} tickLine={false} axisLine={false} width={60} tickFormatter={(v) => v.toLocaleString('fr-FR')} />
+                <YAxis stroke="#767C8C" fontSize={10} tickLine={false} axisLine={false} width={60} tickFormatter={(v) => fmt(v)} />
                 <Tooltip content={<CustomTooltip devise={devise} />} />
                 <Line type="monotone" dataKey="ca" stroke="#059669" strokeWidth={3} dot={{ r: 4, fill: '#059669' }} activeDot={{ r: 6 }} name="ca" />
                 <Line type="monotone" dataKey="depenses" stroke="#ef4444" strokeWidth={2} dot={{ r: 3, fill: '#ef4444' }} strokeDasharray="4 2" activeDot={{ r: 5 }} name="depenses" />
@@ -698,7 +698,7 @@ const Dashboard = () => {
                             <span>{item.config.emoji}</span>
                             <span className="text-text-main">{item.nom}</span>
                           </span>
-                          <span className="text-text-muted">{item.total.toLocaleString('fr-FR')} FCFA ({item.pourcentage}%)</span>
+                          <span className="text-text-muted">{fmt(item.total)} FCFA ({item.pourcentage}%)</span>
                         </div>
                         <div className="w-full bg-black/5 dark:bg-white/10 h-2 rounded-full overflow-hidden">
                           <div 
