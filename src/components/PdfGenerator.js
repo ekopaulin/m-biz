@@ -1,6 +1,8 @@
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
+const formatAmount = (n) => (n || 0).toLocaleString('fr-FR').replace(/[\s\u202F\u00A0]/g, ' ');
+
 /**
  * Génère un rapport PDF complet incluant les ventes ET les dépenses
  * pour donner le bénéfice net réel sur la période.
@@ -42,10 +44,10 @@ export const genererRapportMensuel = (commerce, ventes, periode, depenses = []) 
 
   const boxY = 42;
   const boxes = [
-    { label: 'Chiffre d\'Affaires', value: `${totalCA.toLocaleString('fr-FR')} FCFA`, color: [240, 248, 255] },
-    { label: 'Bénéfice Brut', value: `${totalBrut.toLocaleString('fr-FR')} FCFA`, color: [240, 255, 248] },
-    { label: 'Dépenses', value: `${totalDepenses.toLocaleString('fr-FR')} FCFA`, color: [255, 245, 245] },
-    { label: 'Bénéfice Net', value: `${beneficeNet.toLocaleString('fr-FR')} FCFA`, color: beneficeNet >= 0 ? [235, 255, 245] : [255, 235, 235] },
+    { label: 'Chiffre d\'Affaires', value: `${formatAmount(totalCA)} FCFA`, color: [240, 248, 255] },
+    { label: 'Bénéfice Brut', value: `${formatAmount(totalBrut)} FCFA`, color: [240, 255, 248] },
+    { label: 'Dépenses', value: `${formatAmount(totalDepenses)} FCFA`, color: [255, 245, 245] },
+    { label: 'Bénéfice Net', value: `${formatAmount(beneficeNet)} FCFA`, color: beneficeNet >= 0 ? [235, 255, 245] : [255, 235, 235] },
   ];
 
   boxes.forEach((box, i) => {
@@ -75,11 +77,11 @@ export const genererRapportMensuel = (commerce, ventes, periode, depenses = []) 
       ? ventes.map(v => [
           new Date(v.date).toLocaleDateString('fr-FR'),
           v.modePaiement || 'Cash',
-          v.totalVente?.toLocaleString('fr-FR') || '0',
-          v.totalBenefice?.toLocaleString('fr-FR') || '0',
+          formatAmount(v.totalVente),
+          formatAmount(v.totalBenefice),
         ])
       : [['—', '—', '—', '—']],
-    foot: [['TOTAL', `${ventes.length} vente(s)`, totalCA.toLocaleString('fr-FR'), totalBrut.toLocaleString('fr-FR')]],
+    foot: [['TOTAL', `${ventes.length} vente(s)`, formatAmount(totalCA), formatAmount(totalBrut)]],
     theme: 'striped',
     headStyles: { fillColor: primaryColor, textColor: 255, fontStyle: 'bold', fontSize: 8 },
     footStyles: { fillColor: [245, 245, 250], textColor: darkText, fontStyle: 'bold', fontSize: 8 },
@@ -103,9 +105,9 @@ export const genererRapportMensuel = (commerce, ventes, periode, depenses = []) 
       body: depenses.map(d => [
         new Date(d.date).toLocaleDateString('fr-FR'),
         d.description || '—',
-        d.montant?.toLocaleString('fr-FR') || '0',
+        formatAmount(d.montant),
       ]),
-      foot: [['TOTAL', `${depenses.length} dépense(s)`, totalDepenses.toLocaleString('fr-FR')]],
+      foot: [['TOTAL', `${depenses.length} dépense(s)`, formatAmount(totalDepenses)]],
       theme: 'striped',
       headStyles: { fillColor: [220, 80, 80], textColor: 255, fontStyle: 'bold', fontSize: 8 },
       footStyles: { fillColor: [255, 245, 245], textColor: [180, 40, 40], fontStyle: 'bold', fontSize: 8 },
@@ -212,10 +214,10 @@ export const genererRecuPdf = (commerce, saleDetails) => {
     doc.text(item.nom, 6, y);
     doc.setFont('helvetica', 'normal');
     // Quantité & Prix unitaire
-    doc.text(`${item.quantite} x ${item.prixUnitaire.toLocaleString('fr-FR')} FCFA`, 6, y + 3.5);
+    doc.text(`${item.quantite} x ${formatAmount(item.prixUnitaire)} FCFA`, 6, y + 3.5);
     // Total ligne
     doc.setFont('helvetica', 'bold');
-    doc.text(`${item.total.toLocaleString('fr-FR')} FCFA`, 74, y + 2, { align: 'right' });
+    doc.text(`${formatAmount(item.total)} FCFA`, 74, y + 2, { align: 'right' });
     y += 8.5;
   });
 
@@ -232,7 +234,7 @@ export const genererRecuPdf = (commerce, saleDetails) => {
   doc.setFont('helvetica', 'bold');
   doc.text('TOTAL', 6, y);
   doc.setTextColor(...primaryColor);
-  doc.text(`${saleDetails.totalVente.toLocaleString('fr-FR')} FCFA`, 74, y, { align: 'right' });
+  doc.text(`${formatAmount(saleDetails.totalVente)} FCFA`, 74, y, { align: 'right' });
   doc.setTextColor(...darkText);
   y += 6.5;
 
@@ -288,7 +290,7 @@ export const genererRapportSolvabilite = (commerce, ventes, depenses, dettes, pr
   const greenColor  = [22, 163, 74];
   const redColor    = [220, 38, 38];
 
-  const fmt = (n) => (n || 0).toLocaleString('fr-FR');
+  const fmt = (n) => (n || 0).toLocaleString('fr-FR').replace(/[\s\u202F\u00A0]/g, ' ');
 
   // ── 1. EN-TÊTE ────────────────────────────────────────────────────────────
   doc.setFillColor(...blueColor);
