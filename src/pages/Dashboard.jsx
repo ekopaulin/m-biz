@@ -132,6 +132,8 @@ const Dashboard = () => {
 
   const beneficeDuJour = dailySales.reduce((sum, v) => sum + (v.totalBenefice || 0), 0);
   const caDuJour = dailySales.reduce((sum, v) => sum + (v.totalVente || 0), 0);
+  const caBilan = dailySales.filter(v => (v.modePaiement || '').includes('Bilan')).reduce((sum, v) => sum + (v.totalVente || 0), 0);
+  const caDirect = caDuJour - caBilan;
 
   const expensesDuJour = toutesDepenses.filter(e => e.date.startsWith(selectedDate));
   const totalExpensesDuJour = expensesDuJour.reduce((sum, e) => sum + (e.montant || 0), 0);
@@ -464,17 +466,27 @@ const Dashboard = () => {
       {/* Grille 2x2 compacte épurée */}
       <div className="grid grid-cols-2 gap-4 mb-6">
         {/* Carte 1: Ventes */}
-        <div className="glass-card !p-4 flex flex-col justify-between h-28 border border-[rgba(255,255,255,0.4)] dark:border-[rgba(255,255,255,0.05)] shadow-sm">
-          <div className="flex justify-between items-start">
+        <div className="glass-card !p-4 flex flex-col justify-between h-auto border border-[rgba(255,255,255,0.4)] dark:border-[rgba(255,255,255,0.05)] shadow-sm">
+          <div className="flex justify-between items-start mb-2">
             <div className="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-900 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
               <ShoppingCart size={20} strokeWidth={2} />
             </div>
+            <div className="text-right">
+              <h3 className="text-[11px] font-bold text-text-muted mb-0.5">Total Ventes</h3>
+              <p className="text-lg font-black text-text-main truncate">
+                {fmt(caDuJour)} <span className="text-xs font-bold text-text-muted">{devise}</span>
+              </p>
+            </div>
           </div>
-          <div>
-            <h3 className="text-[11px] font-bold text-text-muted mb-0.5">Ventes</h3>
-            <p className="text-lg font-black text-text-main truncate">
-              {fmt(caDuJour)} <span className="text-xs font-bold text-text-muted">{devise}</span>
-            </p>
+          <div className="flex flex-col gap-1 mt-1 border-t border-black/5 dark:border-white/5 pt-2">
+            <div className="flex justify-between items-center text-[10px]">
+              <span className="text-emerald-600 dark:text-emerald-400 font-bold">Directes</span>
+              <span className="font-semibold text-text-main">{fmt(caDirect)}</span>
+            </div>
+            <div className="flex justify-between items-center text-[10px]">
+              <span className="text-blue-600 dark:text-blue-400 font-bold">Bilan soir</span>
+              <span className="font-semibold text-text-main">{fmt(caBilan)}</span>
+            </div>
           </div>
         </div>
 
@@ -606,9 +618,20 @@ const Dashboard = () => {
                 <div key={s.id} className="flex justify-between items-center p-2 bg-bg-light rounded-xl text-sm">
                   <div className="text-left flex-1 min-w-0 pr-2">
                     <p className="font-semibold text-text-main truncate">{s.itemsText}</p>
-                    <span className="text-xs text-text-muted">
-                      {new Date(s.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} • {s.modePaiement}
-                    </span>
+                    <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
+                      <span className="text-[10px] text-text-muted">
+                        {new Date(s.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      </span>
+                      {s.modePaiement && s.modePaiement.includes('Bilan') ? (
+                        <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-blue-500/10 text-blue-600">
+                          BILAN SOIR
+                        </span>
+                      ) : (
+                        <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-600">
+                          VENTE DIR.
+                        </span>
+                      )}
+                    </div>
                   </div>
                   <div className="flex items-center gap-3">
                     <span className="font-bold text-primary">{fmt(s.totalVente)} {devise}</span>

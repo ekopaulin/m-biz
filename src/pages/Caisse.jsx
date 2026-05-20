@@ -467,25 +467,37 @@ const Caisse = () => {
           </div>
 
           <div className="flex flex-col gap-3 mb-6">
-            {produitsFiltres.map(p => (
-              <div key={p.id} className="glass-card flex items-center justify-between p-4">
-                <div>
-                  <div className="font-bold">{p.nom}</div>
-                  <div className="text-sm text-text-muted">{p.prixVente} FCFA l'unité</div>
+            {produitsFiltres.map(p => {
+              const qty = parseInt(globalQuantities[p.id] || 0);
+              const total = qty * p.prixVente;
+              
+              return (
+              <div key={p.id} className="glass-card flex flex-col p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="font-bold">{p.nom}</div>
+                    <div className="text-sm text-text-muted">{p.prixVente} FCFA l'unité</div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-semibold">Qté vendue:</span>
+                    <input
+                      type="number"
+                      min="0"
+                      placeholder="0"
+                      className="form-control !w-20 text-center font-bold !py-2"
+                      value={globalQuantities[p.id] || ''}
+                      onChange={e => setGlobalQuantities({ ...globalQuantities, [p.id]: e.target.value })}
+                    />
+                  </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-semibold">Qté vendue:</span>
-                  <input
-                    type="number"
-                    min="0"
-                    placeholder="0"
-                    className="form-control !w-20 text-center font-bold !py-2"
-                    value={globalQuantities[p.id] || ''}
-                    onChange={e => setGlobalQuantities({ ...globalQuantities, [p.id]: e.target.value })}
-                  />
-                </div>
+                {qty > 0 && (
+                  <div className="mt-2 pt-2 border-t border-black/5 text-right">
+                    <span className="text-xs text-text-muted mr-2">Total pour {p.nom} :</span>
+                    <span className="font-bold text-primary">{fmt(total)} {devise}</span>
+                  </div>
+                )}
               </div>
-            ))}
+            )})}
             {produitsFiltres.length === 0 && (
               <div className="text-center p-4 text-text-muted text-sm">
                 {produits.length === 0 ? 'Ajoutez d\'abord des produits dans "Stock".' : 'Aucun produit trouvé.'}
@@ -493,9 +505,26 @@ const Caisse = () => {
             )}
           </div>
 
+          {(() => {
+            const grandTotalBilan = produits.reduce((sum, p) => {
+              const qty = parseInt(globalQuantities[p.id] || 0);
+              return sum + (qty * p.prixVente);
+            }, 0);
+
+            if (grandTotalBilan > 0) {
+              return (
+                <div className="bg-primary/10 border border-primary/20 rounded-xl p-4 mb-4 text-center animate-[fadeIn_0.3s_ease-out]">
+                  <p className="text-sm text-text-muted mb-1 font-semibold">Recette totale estimée à vérifier dans la caisse :</p>
+                  <p className="text-2xl font-black text-primary">{fmt(grandTotalBilan)} {devise}</p>
+                </div>
+              );
+            }
+            return null;
+          })()}
+
           <button
             onClick={handleVenteGlobale}
-            className="btn btn-primary w-full !py-4 text-lg mt-6 mb-8 hover:bg-primary-dark cursor-pointer shadow-lg"
+            className="btn btn-primary w-full !py-4 text-lg mt-2 mb-8 hover:bg-primary-dark cursor-pointer shadow-lg"
           >
             <CheckCircle size={24} />
             J'ai fini ma journée !
@@ -514,10 +543,19 @@ const Caisse = () => {
                 <div key={v.id} className="glass-card flex justify-between items-center p-4">
                   <div>
                     <h4 className="font-semibold text-base mb-1">{getProductName(v)}</h4>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 flex-wrap">
                       <span className="text-xs text-text-muted">
-                        {new Date(v.date).toLocaleTimeString([], { timeStyle: 'short' })} • {v.modePaiement}
+                        {new Date(v.date).toLocaleTimeString([], { timeStyle: 'short' })}
                       </span>
+                      {v.modePaiement.includes('Bilan') ? (
+                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-blue-500/10 text-blue-600">
+                          BILAN DU SOIR
+                        </span>
+                      ) : (
+                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-600">
+                          VENTE DIRECTE
+                        </span>
+                      )}
                       {v.statut === 'crédit' && (
                         <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-[#FF6B6B]/10 text-[#FF6B6B]">
                           À CRÉDIT
