@@ -622,7 +622,7 @@ const Dashboard = () => {
                       <span className="text-[10px] text-text-muted">
                         {new Date(s.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                       </span>
-                      {s.modePaiement && s.modePaiement.includes('Bilan') ? (
+                      {String(s.modePaiement || '').includes('Bilan') ? (
                         <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-blue-500/10 text-blue-600">
                           BILAN SOIR
                         </span>

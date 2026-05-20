@@ -547,7 +547,7 @@ const Caisse = () => {
                       <span className="text-xs text-text-muted">
                         {new Date(v.date).toLocaleTimeString([], { timeStyle: 'short' })}
                       </span>
-                      {v.modePaiement.includes('Bilan') ? (
+                      {String(v.modePaiement || '').includes('Bilan') ? (
                         <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-blue-500/10 text-blue-600">
                           BILAN DU SOIR
                         </span>
