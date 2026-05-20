@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { TrendingUp, TrendingDown, AlertTriangle, Users, Wallet, ShoppingCart, Settings, X } from 'lucide-react';
 import { useLiveQuery } from 'dexie-react-hooks';
+import { useNavigate } from 'react-router-dom';
 import { db } from '../db';
 import { useAppContext } from '../context/AppContext';
 import { genererRapportMensuel } from '../components/PdfGenerator';
@@ -49,6 +50,7 @@ const CustomTooltip = ({ active, payload, label, devise }) => {
 
 const Dashboard = () => {
   const { activeCommerceId, theme, toggleTheme, devise } = useAppContext();
+  const navigate = useNavigate();
   const [periode, setPeriode] = useState('7jours');
   const [selectedDate, setSelectedDate] = useState(toLocalISOString(new Date()).split('T')[0]);
   const [isPrintModalOpen, setIsPrintModalOpen] = useState(false);
@@ -494,11 +496,26 @@ const Dashboard = () => {
       <div className="grid grid-cols-2 gap-4 mb-6">
 
         {/* Carte 2: Dépenses */}
-        <div className="glass-card !p-4 flex flex-col justify-between h-28 border border-[rgba(255,255,255,0.4)] dark:border-[rgba(255,255,255,0.05)] shadow-sm relative group">
+        <div 
+          onClick={() => {
+            setIsHistoryExpensesOpen(true);
+            setTimeout(() => {
+              document.getElementById('expenses-history-section')?.scrollIntoView({ behavior: 'smooth' });
+            }, 100);
+          }}
+          className="glass-card !p-4 flex flex-col justify-between h-28 border border-[rgba(255,255,255,0.4)] dark:border-[rgba(255,255,255,0.05)] shadow-sm relative group cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors active:scale-95"
+        >
           <div className="flex justify-between items-start">
             <div className="w-10 h-10 rounded-xl bg-red-100 dark:bg-red-900 flex items-center justify-center text-red-500 dark:text-red-400">
               <TrendingDown size={20} strokeWidth={2} />
             </div>
+            <button 
+              onClick={(e) => { e.stopPropagation(); setIsExpenseModalOpen(true); }}
+              className="bg-[#991b1b] hover:bg-red-800 text-white text-[10px] font-bold px-3 py-1.5 rounded-lg uppercase tracking-wider transition-all shadow-sm active:scale-95"
+              title="Saisir une dépense"
+            >
+              SAISIR
+            </button>
           </div>
           <div>
             <h3 className="text-[11px] font-bold text-text-muted mb-0.5">Dépenses</h3>
@@ -506,17 +523,13 @@ const Dashboard = () => {
               {fmt(totalExpensesDuJour)} <span className="text-xs font-bold text-text-muted">{devise}</span>
             </p>
           </div>
-          <button 
-            onClick={() => setIsExpenseModalOpen(true)}
-            className="absolute top-3 right-3 bg-red-100 text-red-600 dark:bg-red-900 dark:text-red-100 px-3 py-1.5 rounded-lg font-bold hover:bg-red-200 transition-all shadow-sm flex items-center justify-center"
-            title="Saisir une dépense"
-          >
-            <span className="text-[10px] uppercase tracking-wide">Saisir</span>
-          </button>
         </div>
 
         {/* Carte 3: Dettes */}
-        <div className="glass-card !p-4 flex flex-col justify-between h-28 border border-[rgba(255,255,255,0.4)] dark:border-[rgba(255,255,255,0.05)] shadow-sm">
+        <div 
+          onClick={() => navigate('/dettes')}
+          className="glass-card !p-4 flex flex-col justify-between h-28 border border-[rgba(255,255,255,0.4)] dark:border-[rgba(255,255,255,0.05)] shadow-sm cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+        >
           <div className="flex justify-between items-start">
             <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900 flex items-center justify-center text-blue-600 dark:text-blue-400">
               <Users size={20} strokeWidth={2} />
@@ -536,7 +549,10 @@ const Dashboard = () => {
         </div>
 
         {/* Carte 4: Stock */}
-        <div className="glass-card !p-4 flex flex-col justify-between h-28 border border-[rgba(255,255,255,0.4)] dark:border-[rgba(255,255,255,0.05)] shadow-sm">
+        <div 
+          onClick={() => navigate('/stock')}
+          className="glass-card !p-4 flex flex-col justify-between h-28 border border-[rgba(255,255,255,0.4)] dark:border-[rgba(255,255,255,0.05)] shadow-sm cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+        >
           <div className="flex justify-between items-start">
             <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${stockAlerts > 0 ? 'bg-amber-100 dark:bg-amber-900 text-amber-600 dark:text-amber-400' : 'bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-300'}`}>
               <AlertTriangle size={20} strokeWidth={2} />
@@ -654,7 +670,7 @@ const Dashboard = () => {
       </div>
 
       {/* Historique des Dépenses du jour (Déroulant) */}
-      <div className="glass-card p-4 mb-6">
+      <div id="expenses-history-section" className="glass-card p-4 mb-6 scroll-mt-20">
         <button 
           onClick={() => setIsHistoryExpensesOpen(!isHistoryExpensesOpen)}
           className="flex justify-between items-center w-full font-bold text-base text-text-main text-left"
