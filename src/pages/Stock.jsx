@@ -5,6 +5,7 @@ import { db } from '../db';
 import { useAppContext } from '../context/AppContext';
 import toast from 'react-hot-toast';
 import ConfirmModal from '../components/ConfirmModal';
+import Loader from '../components/Loader';
 
 const fmt = (n) => (n || 0).toLocaleString('fr-FR');
 const emptyForm = { nom: '', categorie: '', prixAchat: '', prixVente: '', stock: '', stockMin: '5', isFood: false };
@@ -22,7 +23,11 @@ const Stock = () => {
   const produits = useLiveQuery(
     () => db.produits.where('commerceId').equals(activeCommerceId || 0).toArray(),
     [activeCommerceId]
-  ) || [];
+  );
+
+  if (produits === undefined) {
+    return <Loader message="Chargement du stock..." />;
+  }
 
   const produitsFiltres = searchQuery.trim()
     ? produits.filter(p => p.actif !== 0 && p.nom.toLowerCase().includes(searchQuery.toLowerCase()))

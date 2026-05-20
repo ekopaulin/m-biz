@@ -4,6 +4,7 @@ import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from '../db';
 import { useAppContext } from '../context/AppContext';
 import toast from 'react-hot-toast';
+import Loader from '../components/Loader';
 
 const toLocalISOString = (d = new Date()) => {
   const tzOffset = d.getTimezoneOffset() * 60000;
@@ -53,7 +54,11 @@ const Dettes = () => {
       );
     },
     [activeCommerceId]
-  ) || [];
+  );
+
+  if (toutesDettes === undefined) {
+    return <Loader message="Chargement des dettes..." />;
+  }
 
   const dettesClients = toutesDettes.filter(d => d.type !== 'fournisseur');
   const dettesFournisseurs = toutesDettes.filter(d => d.type === 'fournisseur');

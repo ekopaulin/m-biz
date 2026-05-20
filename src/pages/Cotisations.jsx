@@ -5,6 +5,7 @@ import { db } from '../db';
 import { useAppContext } from '../context/AppContext';
 import toast from 'react-hot-toast';
 import ConfirmModal from '../components/ConfirmModal';
+import Loader from '../components/Loader';
 
 const toLocalISOString = (d = new Date()) => {
   const tzOffset = d.getTimezoneOffset() * 60000;
@@ -35,12 +36,16 @@ const Cotisations = () => {
   const tontines = useLiveQuery(
     () => db.tontines.where('commerceId').equals(activeCommerceId || 0).toArray(),
     [activeCommerceId]
-  ) || [];
+  );
 
   // Charger tous les versements
   const tousVersements = useLiveQuery(
     () => db.versementsTontine.toArray()
-  ) || [];
+  );
+
+  if (tontines === undefined || tousVersements === undefined) {
+    return <Loader message="Chargement des cotisations..." />;
+  }
 
   // Calculer le total cotisé par tontine
   const getStatsTontine = (tontineId) => {

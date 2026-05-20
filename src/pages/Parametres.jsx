@@ -6,6 +6,7 @@ import { useAppContext } from '../context/AppContext';
 import ConfirmModal from '../components/ConfirmModal';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { genererRapportSolvabilite } from '../components/PdfGenerator';
+import Loader from '../components/Loader';
 
 const Parametres = () => {
   const { logout, activeCommerceId, devise, setDevise } = useAppContext();
@@ -19,22 +20,26 @@ const Parametres = () => {
   const toutesVentes = useLiveQuery(
     () => activeCommerceId ? db.ventes.where('commerceId').equals(activeCommerceId).toArray() : [],
     [activeCommerceId]
-  ) || [];
+  );
 
   const toutesDepenses = useLiveQuery(
     () => activeCommerceId ? db.depenses.where('commerceId').equals(activeCommerceId).toArray() : [],
     [activeCommerceId]
-  ) || [];
+  );
 
   const toutesDettes = useLiveQuery(
     () => activeCommerceId ? db.dettesClients.where('commerceId').equals(activeCommerceId).toArray() : [],
     [activeCommerceId]
-  ) || [];
+  );
 
   const tousProduits = useLiveQuery(
     () => activeCommerceId ? db.produits.where('commerceId').equals(activeCommerceId).toArray() : [],
     [activeCommerceId]
-  ) || [];
+  );
+
+  if (commerce === undefined || toutesVentes === undefined || toutesDepenses === undefined || toutesDettes === undefined || tousProduits === undefined) {
+    return <Loader message="Chargement des paramètres..." />;
+  }
 
   const handleSolvabilite = () => {
     if (!commerce) { toast.error('Boutique introuvable'); return; }

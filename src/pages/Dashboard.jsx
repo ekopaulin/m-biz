@@ -9,6 +9,7 @@ import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import ConfirmModal from '../components/ConfirmModal';
 import OnboardingModal from '../components/OnboardingModal';
+import Loader from '../components/Loader';
 
 const toLocalISOString = (d = new Date()) => {
   const tzOffset = d.getTimezoneOffset() * 60000;
@@ -60,7 +61,6 @@ const Dashboard = () => {
   const [isHistoryExpensesOpen, setIsHistoryExpensesOpen] = useState(false);
   const [confirmVente, setConfirmVente] = useState({ open: false, id: null, montant: 0 });
   const [confirmDepense, setConfirmDepense] = useState({ open: false, id: null, desc: '', montant: 0 });
-  // Weekly report state
   const [weeklyReport, setWeeklyReport] = useState(null);
 
   const [showOnboarding, setShowOnboarding] = useState(() => {
@@ -72,7 +72,6 @@ const Dashboard = () => {
     setShowOnboarding(false);
   };
 
-  // Fetch real data from Dexie
   const today = toLocalISOString(new Date()).split('T')[0];
   
   const commerce = useLiveQuery(
@@ -83,42 +82,26 @@ const Dashboard = () => {
   const toutesVentes = useLiveQuery(
     () => db.ventes.where('commerceId').equals(activeCommerceId || 0).toArray(),
     [activeCommerceId]
-  ) || [];
+  );
 
-  const dailySales = toutesVentes.filter(v => v.date.startsWith(selectedDate));
-  const isTodaySelected = selectedDate === today;
-
-  const beneficeDuJour = dailySales.reduce((sum, v) => sum + (v.totalBenefice || 0), 0);
-  const caDuJour = dailySales.reduce((sum, v) => sum + (v.totalVente || 0), 0);
-
-  // Charger et calculer les dépenses
   const toutesDepenses = useLiveQuery(
     () => db.depenses.where('commerceId').equals(activeCommerceId || 0).toArray(),
     [activeCommerceId]
-  ) || [];
-
-  const expensesDuJour = toutesDepenses.filter(e => e.date.startsWith(selectedDate));
-  const totalExpensesDuJour = expensesDuJour.reduce((sum, e) => sum + (e.montant || 0), 0);
-
-  // Bénéfice Net (Ventes - Dépenses)
-  const beneficeNet = beneficeDuJour - totalExpensesDuJour;
+  );
 
   const stockAlerts = useLiveQuery(
     () => db.produits.where('commerceId').equals(activeCommerceId || 0).filter(p => p.actif !== 0 && !p.isFood && p.stock <= (p.stockMin || 5)).count(),
     [activeCommerceId]
-  ) || 0;
+  );
 
   const dettesClients = useLiveQuery(
     () => db.dettesClients.where('commerceId').equals(activeCommerceId || 0).filter(d => d.statut !== 'soldé').toArray(),
     [activeCommerceId]
-  ) || [];
+  );
 
-  const totalDettes = dettesClients.reduce((sum, d) => sum + parseFloat(d.montantRestant || 0), 0);
-  const clientsEnAttente = new Set(dettesClients.map(d => d.clientId)).size;
-
-  // Historique détaillé des ventes avec les noms des produits
   const salesWithDetails = useLiveQuery(
     async () => {
+      if (!toutesVentes) return undefined;
       const sales = toutesVentes.filter(v => v.date.startsWith(selectedDate));
       return Promise.all(
         sales.map(async (v) => {
@@ -137,7 +120,26 @@ const Dashboard = () => {
       );
     },
     [toutesVentes, selectedDate]
-  ) || [];
+  );
+
+  // Vérification de l'état de chargement
+  if (commerce === undefined || toutesVentes === undefined || toutesDepenses === undefined || stockAlerts === undefined || dettesClients === undefined || salesWithDetails === undefined) {
+    return <Loader message="Chargement du tableau de bord..." />;
+  }
+
+  const dailySales = toutesVentes.filter(v => v.date.startsWith(selectedDate));
+  const isTodaySelected = selectedDate === today;
+
+  const beneficeDuJour = dailySales.reduce((sum, v) => sum + (v.totalBenefice || 0), 0);
+  const caDuJour = dailySales.reduce((sum, v) => sum + (v.totalVente || 0), 0);
+
+  const expensesDuJour = toutesDepenses.filter(e => e.date.startsWith(selectedDate));
+  const totalExpensesDuJour = expensesDuJour.reduce((sum, e) => sum + (e.montant || 0), 0);
+
+  const beneficeNet = beneficeDuJour - totalExpensesDuJour;
+
+  const totalDettes = dettesClients.reduce((sum, d) => sum + parseFloat(d.montantRestant || 0), 0);
+  const clientsEnAttente = new Set(dettesClients.map(d => d.clientId)).size;
 
   const handleAddExpense = async (e) => {
     e.preventDefault();

@@ -5,6 +5,7 @@ import { db } from '../db';
 import { useAppContext } from '../context/AppContext';
 import toast from 'react-hot-toast';
 import { genererRecuPdf } from '../components/PdfGenerator';
+import Loader from '../components/Loader';
 
 const toLocalISOString = (d = new Date()) => {
   const tzOffset = d.getTimezoneOffset() * 60000;
@@ -41,17 +42,21 @@ const Caisse = () => {
       .filter(p => (p.stock > 0 || p.isFood) && p.actif !== 0)
       .toArray(),
     [activeCommerceId]
-  ) || [];
+  );
+
+  const ventesRecentes = useLiveQuery(
+    () => db.ventes.where('commerceId').equals(activeCommerceId || 0).reverse().limit(5).toArray(),
+    [activeCommerceId]
+  );
+
+  if (commerce === undefined || produits === undefined || ventesRecentes === undefined) {
+    return <Loader message="Préparation de la caisse..." />;
+  }
 
   // Filtrage en temps réel par la recherche
   const produitsFiltres = searchQuery.trim()
     ? produits.filter(p => p.nom.toLowerCase().includes(searchQuery.toLowerCase()))
     : produits;
-
-  const ventesRecentes = useLiveQuery(
-    () => db.ventes.where('commerceId').equals(activeCommerceId || 0).reverse().limit(5).toArray(),
-    [activeCommerceId]
-  ) || [];
 
   const handleVenteDetail = async () => {
     if (!selectedProductId || quantite < 1) return;
