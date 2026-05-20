@@ -26,19 +26,19 @@ const CustomTooltip = ({ active, payload, label, devise }) => {
     const benefice = ca - depenses;
     
     return (
-      <div className="glass-card !p-3 border border-[rgba(255,255,255,0.5)] dark:border-[rgba(255,255,255,0.1)] rounded-xl shadow-xl text-xs font-semibold text-slate-800 dark:text-slate-100">
-        <p className="text-slate-500 dark:text-slate-400 mb-2">{label}</p>
-        <p className="flex justify-between gap-4 mb-1">
-          <span>Entrées (Ventes) :</span>
-          <span className="font-bold text-emerald-600 dark:text-emerald-400">{fmt(ca)} {devise}</span>
+      <div className="glass-card !p-3 border border-[rgba(255,255,255,0.5)] dark:border-[rgba(255,255,255,0.1)] rounded-xl shadow-xl text-xs min-w-[150px]">
+        <p className="text-slate-600 dark:text-slate-300 font-bold mb-2 border-b border-slate-100 dark:border-slate-700 pb-1">{label}</p>
+        <p className="flex justify-between gap-4 mb-1.5">
+          <span className="text-slate-700 dark:text-slate-200 font-medium">Entrées (Ventes) :</span>
+          <span className="font-bold text-emerald-700 dark:text-emerald-400">{fmt(ca)} {devise}</span>
         </p>
         <p className="flex justify-between gap-4 mb-2">
-          <span>Sorties (Dépenses) :</span>
-          <span className="font-bold text-red-500 dark:text-red-400">{fmt(depenses)} {devise}</span>
+          <span className="text-slate-700 dark:text-slate-200 font-medium">Sorties (Dépenses) :</span>
+          <span className="font-bold text-red-600 dark:text-red-400">{fmt(depenses)} {devise}</span>
         </p>
         <div className="border-t border-slate-200 dark:border-slate-700 pt-2 flex justify-between gap-4">
-          <span>Bénéfice Réel :</span>
-          <span className={`font-bold ${benefice >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-500 dark:text-red-400'}`}>
+          <span className="text-slate-800 dark:text-slate-100 font-bold">Bénéfice Réel :</span>
+          <span className={`font-bold ${benefice >= 0 ? 'text-emerald-700 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
             {fmt(benefice)} {devise}
           </span>
         </div>
@@ -609,9 +609,9 @@ const Dashboard = () => {
         {phraseSante && (
           <div className={`mt-2.5 p-3 rounded-xl border text-xs font-bold flex items-center justify-between transition-all shadow-sm ${
             isPositiveHealth === true
-              ? 'bg-green-50 dark:bg-[#059669]/5 border-[#059669]/20 text-[#059669] dark:text-green-400'
+              ? 'bg-emerald-100 dark:bg-[#059669]/10 border-emerald-300 dark:border-emerald-700/50 text-emerald-900 dark:text-emerald-300'
               : isPositiveHealth === false
-                ? 'bg-red-50 dark:bg-red-500/5 border-red-500/20 text-red-500 dark:text-red-400'
+                ? 'bg-red-50 dark:bg-red-500/5 border-red-500/20 text-red-700 dark:text-red-400'
                 : 'bg-bg-light border-black/5 text-text-muted'
           }`}>
             <span>{phraseSante}</span>
