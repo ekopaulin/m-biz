@@ -122,6 +122,31 @@ const Dashboard = () => {
     [toutesVentes, selectedDate]
   );
 
+  // Rapport hebdomadaire automatique le dimanche
+  React.useEffect(() => {
+    const today = new Date();
+    if (today.getDay() === 0 && toutesVentes && toutesVentes.length > 0) { // 0 = Dimanche
+      const todayStr = toLocalISOString().split('T')[0];
+      const lastReport = localStorage.getItem('mbiz_lastWeeklyReport');
+      if (lastReport !== todayStr) {
+        // Calculer les stats de la semaine passée (lundi à dimanche)
+        const lastMonday = new Date(today);
+        lastMonday.setDate(today.getDate() - 7);
+        const lastSunday = new Date(today);
+        lastSunday.setDate(today.getDate() - 1);
+        const startW = lastMonday.toISOString().split('T')[0];
+        const endW = lastSunday.toISOString().split('T')[0] + 'T23:59:59';
+        const ventesS = toutesVentes.filter(v => v.date >= startW && v.date <= endW);
+        const depensesS = toutesDepenses ? toutesDepenses.filter(d => d.date >= startW && d.date <= endW) : [];
+        const caS = ventesS.reduce((s, v) => s + v.totalVente, 0);
+        const benS = ventesS.reduce((s, v) => s + v.totalBenefice, 0);
+        const depS = depensesS.reduce((s, d) => s + d.montant, 0);
+        setWeeklyReport({ startW, endW: lastSunday.toISOString().split('T')[0], ca: caS, benefice: benS, depenses: depS, nbVentes: ventesS.length });
+        localStorage.setItem('mbiz_lastWeeklyReport', todayStr);
+      }
+    }
+  }, [toutesVentes, toutesDepenses]);
+
   // Vérification de l'état de chargement
   if (commerce === undefined || toutesVentes === undefined || toutesDepenses === undefined || stockAlerts === undefined || dettesClients === undefined || salesWithDetails === undefined) {
     return <Loader message="Chargement du tableau de bord..." />;
@@ -212,30 +237,6 @@ const Dashboard = () => {
     setIsPrintModalOpen(false);
   };
 
-  // Rapport hebdomadaire automatique le dimanche
-  React.useEffect(() => {
-    const today = new Date();
-    if (today.getDay() === 0 && toutesVentes.length > 0) { // 0 = Dimanche
-      const todayStr = toLocalISOString().split('T')[0];
-      const lastReport = localStorage.getItem('mbiz_lastWeeklyReport');
-      if (lastReport !== todayStr) {
-        // Calculer les stats de la semaine passée (lundi à dimanche)
-        const lastMonday = new Date(today);
-        lastMonday.setDate(today.getDate() - 7);
-        const lastSunday = new Date(today);
-        lastSunday.setDate(today.getDate() - 1);
-        const startW = lastMonday.toISOString().split('T')[0];
-        const endW = lastSunday.toISOString().split('T')[0] + 'T23:59:59';
-        const ventesS = toutesVentes.filter(v => v.date >= startW && v.date <= endW);
-        const depensesS = toutesDepenses.filter(d => d.date >= startW && d.date <= endW);
-        const caS = ventesS.reduce((s, v) => s + v.totalVente, 0);
-        const benS = ventesS.reduce((s, v) => s + v.totalBenefice, 0);
-        const depS = depensesS.reduce((s, d) => s + d.montant, 0);
-        setWeeklyReport({ startW, endW: lastSunday.toISOString().split('T')[0], ca: caS, benefice: benS, depenses: depS, nbVentes: ventesS.length });
-        localStorage.setItem('mbiz_lastWeeklyReport', todayStr);
-      }
-    }
-  }, [toutesVentes, toutesDepenses]);
 
   const handleWhatsApp = () => {
     const dateLabel = isTodaySelected ? "du jour" : `du ${new Date(selectedDate).toLocaleDateString('fr-FR')}`;
