@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import ReactGA from 'react-ga4';
 
 // Remplacez par votre vrai Measurement ID Google Analytics (ex: G-XXXXXXXXXX)
-const MEASUREMENT_ID = 'G-XXXXXXXXXX'; 
+const MEASUREMENT_ID = 'G-4EBLW9W68R'; 
 
 let isInitialized = false;
 
