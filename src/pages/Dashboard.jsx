@@ -55,6 +55,8 @@ const Dashboard = () => {
   const [selectedDate, setSelectedDate] = useState(toLocalISOString(new Date()).split('T')[0]);
   const [isPrintModalOpen, setIsPrintModalOpen] = useState(false);
   const [printOption, setPrintOption] = useState('mois_en_cours');
+  const [printIncludeDepenses, setPrintIncludeDepenses] = useState(true);
+  const [printIncludeBenefice, setPrintIncludeBenefice] = useState(true);
   const [startDate, setStartDate] = useState(toLocalISOString(new Date()).split('T')[0]);
   const [endDate, setEndDate] = useState(toLocalISOString(new Date()).split('T')[0]);
   const [isExpenseModalOpen, setIsExpenseModalOpen] = useState(false);
@@ -235,7 +237,10 @@ const Dashboard = () => {
     filteredVentes = toutesVentes.filter(v => v.date >= startStr && v.date <= endStr + 'T23:59:59');
     filteredDepenses = toutesDepenses.filter(d => d.date >= startStr && d.date <= endStr + 'T23:59:59');
 
-    genererRapportMensuel(commerce || { nom: 'M-Biz' }, filteredVentes, label, filteredDepenses);
+    genererRapportMensuel(commerce || { nom: 'M-Biz' }, filteredVentes, label, printIncludeDepenses ? filteredDepenses : [], {
+      showBenefice: printIncludeBenefice,
+      showDepenses: printIncludeDepenses
+    });
     setIsPrintModalOpen(false);
   };
 
@@ -879,6 +884,28 @@ const Dashboard = () => {
                   <p className="font-semibold text-sm">Choisir des dates</p>
                   <p className="text-xs text-text-muted">Indiquer un intervalle personnalisé</p>
                 </div>
+              </label>
+            </div>
+
+            <div className="flex flex-col gap-3 mb-6 mt-4 pt-4 border-t border-black/10">
+              <h3 className="font-bold text-sm text-text-main">Que voulez-vous afficher ?</h3>
+              <label className="flex items-center gap-3 p-3 bg-white rounded-xl border border-black/5 cursor-pointer">
+                <input 
+                  type="checkbox" 
+                  checked={printIncludeBenefice} 
+                  onChange={(e) => setPrintIncludeBenefice(e.target.checked)} 
+                  className="accent-primary w-5 h-5"
+                />
+                <span className="text-sm font-semibold">Le bénéfice (Marge)</span>
+              </label>
+              <label className="flex items-center gap-3 p-3 bg-white rounded-xl border border-black/5 cursor-pointer">
+                <input 
+                  type="checkbox" 
+                  checked={printIncludeDepenses} 
+                  onChange={(e) => setPrintIncludeDepenses(e.target.checked)} 
+                  className="accent-primary w-5 h-5"
+                />
+                <span className="text-sm font-semibold">Les dépenses détaillées</span>
               </label>
             </div>
 

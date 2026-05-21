@@ -12,7 +12,7 @@ const formatAmount = (n) => Number(n || 0).toString().replace(/\B(?=(\d{3})+(?!\
  * @param {string} periode  - Le libellé de la période (ex: "Ce mois-ci")
  * @param {Array}  depenses - Les dépenses de la période (optionnel)
  */
-export const genererRapportMensuel = (commerce, ventes, periode, depenses = []) => {
+export const genererRapportMensuel = (commerce, ventes, periode, depenses = [], options = { showBenefice: true, showDepenses: true }) => {
   const doc = new jsPDF();
 
   const primaryColor = [100, 200, 160]; // Vert M-Biz
@@ -44,16 +44,24 @@ export const genererRapportMensuel = (commerce, ventes, periode, depenses = []) 
 
   const boxY = 42;
   const boxes = [
-    { label: 'Chiffre d\'Affaires', value: `${formatAmount(totalCA)} FCFA`, color: [240, 248, 255] },
-    { label: 'Bénéfice Brut', value: `${formatAmount(totalBrut)} FCFA`, color: [240, 255, 248] },
-    { label: 'Dépenses', value: `${formatAmount(totalDepenses)} FCFA`, color: [255, 245, 245] },
-    { label: 'Bénéfice Net', value: `${formatAmount(beneficeNet)} FCFA`, color: beneficeNet >= 0 ? [235, 255, 245] : [255, 235, 235] },
+    { label: 'Chiffre d\'Affaires', value: `${formatAmount(totalCA)} FCFA`, color: [240, 248, 255] }
   ];
+  if (options.showBenefice) {
+    boxes.push({ label: 'Bénéfice Brut', value: `${formatAmount(totalBrut)} FCFA`, color: [240, 255, 248] });
+  }
+  if (options.showDepenses) {
+    boxes.push({ label: 'Dépenses', value: `${formatAmount(totalDepenses)} FCFA`, color: [255, 245, 245] });
+  }
+  if (options.showBenefice && options.showDepenses) {
+    boxes.push({ label: 'Bénéfice Net', value: `${formatAmount(beneficeNet)} FCFA`, color: beneficeNet >= 0 ? [235, 255, 245] : [255, 235, 235] });
+  }
 
+  const boxWidth = 182 / boxes.length; // 182 = 210 - 28 (margins)
+  
   boxes.forEach((box, i) => {
-    const x = 14 + i * 45.5;
+    const x = 14 + i * boxWidth + (i > 0 ? 2 : 0);
     doc.setFillColor(...box.color);
-    doc.roundedRect(x, boxY, 43, 20, 2, 2, 'F');
+    doc.roundedRect(x, boxY, boxWidth - 2, 20, 2, 2, 'F');
     doc.setFontSize(7);
     doc.setTextColor(...mutedText);
     doc.setFont('helvetica', 'normal');
@@ -61,7 +69,7 @@ export const genererRapportMensuel = (commerce, ventes, periode, depenses = []) 
     doc.setFontSize(9);
     doc.setTextColor(...darkText);
     doc.setFont('helvetica', 'bold');
-    doc.text(box.value, x + 4, boxY + 15, { maxWidth: 38 });
+    doc.text(box.value, x + 4, boxY + 15, { maxWidth: boxWidth - 6 });
   });
 
   // --- TABLEAU DES VENTES ---
@@ -72,16 +80,16 @@ export const genererRapportMensuel = (commerce, ventes, periode, depenses = []) 
 
   autoTable(doc, {
     startY: boxY + 34,
-    head: [['Date', 'Mode Paiement', 'CA (FCFA)', 'Bénéfice (FCFA)']],
+    head: [['Date', 'Mode Paiement', 'CA (FCFA)', options.showBenefice ? 'Bénéfice (FCFA)' : null].filter(Boolean)],
     body: ventes.length > 0
       ? ventes.map(v => [
           new Date(v.date).toLocaleDateString('fr-FR'),
           v.modePaiement || 'Cash',
           formatAmount(v.totalVente),
-          formatAmount(v.totalBenefice),
-        ])
-      : [['—', '—', '—', '—']],
-    foot: [['TOTAL', `${ventes.length} vente(s)`, formatAmount(totalCA), formatAmount(totalBrut)]],
+          options.showBenefice ? formatAmount(v.totalBenefice) : null,
+        ].filter(val => val !== null))
+      : [['—', '—', '—', options.showBenefice ? '—' : null].filter(Boolean)],
+    foot: [['TOTAL', `${ventes.length} vente(s)`, formatAmount(totalCA), options.showBenefice ? formatAmount(totalBrut) : null].filter(Boolean)],
     theme: 'striped',
     headStyles: { fillColor: primaryColor, textColor: 255, fontStyle: 'bold', fontSize: 8 },
     footStyles: { fillColor: [245, 245, 250], textColor: darkText, fontStyle: 'bold', fontSize: 8 },
