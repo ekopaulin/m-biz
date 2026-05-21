@@ -10,6 +10,7 @@ import Parametres from './pages/Parametres';
 import Cotisations from './pages/Cotisations';
 import TutorialOverlay from './components/TutorialOverlay';
 import InstallPrompt from './components/InstallPrompt';
+import AnalyticsTracker from './components/AnalyticsTracker';
 import { AppProvider } from './context/AppContext';
 import './index.css';
 
@@ -17,6 +18,7 @@ function App() {
   return (
     <AppProvider>
       <Router>
+        <AnalyticsTracker />
         <div className="app-container mx-auto">
           <Toaster position="top-center" toastOptions={{ duration: 3000, style: { background: '#333', color: '#fff', borderRadius: '10px' } }} />
           <InstallPrompt />
